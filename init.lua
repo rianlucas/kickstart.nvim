@@ -672,7 +672,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -731,6 +731,55 @@ require('lazy').setup({
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
+        },
+      }
+    end,
+  },
+
+  {
+    'nvim-tree/nvim-web-devicons',
+    enabled = true,
+    config = function()
+      require('nvim-web-devicons').setup()
+    end,
+  },
+
+  {
+    'nvim-tree/nvim-tree.lua',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('nvim-tree').setup()
+      vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Abrir explorer' })
+    end,
+  },
+
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-neotest/nvim-nio',
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-neotest/neotest-go',
+    },
+    config = function()
+      local neotest = require 'neotest'
+      local neotest_go = require 'neotest-go'
+
+      neotest.setup {
+        adapters = {
+          neotest_go {
+            -- força o uso do gopls como cliente lsp
+            experimental = {
+              test_table = true,
+            },
+          },
+        },
+        output_panel = {
+          enable = true,
+          open = 'botright split | resize 15',
+        },
+        quickfix = {
+          open = false,
         },
       }
     end,
@@ -799,12 +848,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
         opts = {},
       },
@@ -944,7 +993,7 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'go' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
