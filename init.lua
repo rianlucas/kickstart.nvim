@@ -745,6 +745,18 @@ require('lazy').setup({
   },
 
   {
+    'akinsho/bufferline.nvim',
+    version = '*',
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    config = function()
+      require('bufferline').setup {}
+      vim.opt.termguicolors = true
+      vim.keymap.set('n', '<Tab>', ':BufferLineCycleNext<CR>', { desc = 'Próximo buffer' })
+      vim.keymap.set('n', '<S-Tab>', ':BufferLineCyclePrev<CR>', { desc = 'Buffer anterior' })
+    end,
+  },
+
+  {
     'nvim-tree/nvim-tree.lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
@@ -768,7 +780,6 @@ require('lazy').setup({
       neotest.setup {
         adapters = {
           neotest_go {
-            -- força o uso do gopls como cliente lsp
             experimental = {
               test_table = true,
             },
